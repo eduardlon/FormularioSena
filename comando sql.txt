@@ -1,0 +1,12 @@
+CREATE DATABASE IF NOT EXISTS sena_aprendices CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+USE sena_aprendices;
+
+CREATE TABLE IF NOT EXISTS aprendices (
+    id_aprendiz VARCHAR(50) PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    direccion VARCHAR(255),
+    telefono VARCHAR(20),
+    programa VARCHAR(100),
+    ficha VARCHAR(20)
+);
