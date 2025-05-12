@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ingreso Aprendiz</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Fuentes: Roboto y Bebas Neue -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Imagen de fondo -->
+  <div class="background"></div>
+  
+  <!-- Contenedor principal -->
+  <div class="container">
+    <!-- Contenedor unificado que agrupa el side-panel y el formulario -->
+    <div class="unified-panel" style="display: flex;">
+      <!-- Side-panel con logo, botones y fecha/hora -->
+      <div class="side-panel">
+        <div class="logo">
+          <img src="sena-logo.png" alt="Logo Sena">
+        </div>
+        <nav class="menu">
+          <button type="button" class="menu-btn" id="ingreso-btn">Ingreso</button>
+          <button type="button" class="menu-btn" id="consulta-btn">Consulta</button>
+          <button type="button" class="menu-btn" id="actualizar-btn">Actualizar</button>
+          <button type="button" class="menu-btn" id="eliminar-btn">Eliminar</button>
+          <button type="button" class="menu-btn" id="notas-btn">Notas</button>
+        </nav>
+        <div class="date">
+          <p id="current-date"></p>
+          <p id="current-time"></p>
+        </div>
+      </div>
+      <!-- Formulario de ingreso -->
+      <div class="form-panel" id="registro-form-panel">
+        <h1 id="form-title">Ingreso Aprendiz</h1>
+        <form id="aprendiz-form" action="procesar_aprendiz.php" method="post">
+          <input type="hidden" id="accion" name="accion" value="insertar">
+          <div class="form-group">
+            <label for="id_aprendiz">ID Aprendiz</label>
+            <input type="text" id="id_aprendiz" name="id_aprendiz" required>
+          </div>
+          <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input type="text" id="nombre" name="nombre" required>
+          </div>
+          <div class="form-group">
+            <label for="direccion">Dirección</label>
+            <input type="text" id="direccion" name="direccion" required>
+          </div>
+          <div class="form-group">
+            <label for="telefono">Teléfono</label>
+            <input type="tel" id="telefono" name="telefono" pattern="[0-9]{7,10}" title="Ingrese un número de teléfono válido (7 a 10 dígitos)" required>
+          </div>
+          <div class="form-group">
+            <label for="programa">Programa</label>
+            <input type="text" id="programa" name="programa" required>
+          </div>
+          <div class="form-group">
+            <label for="ficha">Número de Ficha</label>
+            <input type="text" id="ficha" name="ficha" required>
+          </div>
+          <div class="form-group">
+            <button type="submit" class="submit-btn">Registrar</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Formulario de consulta -->
+      <div class="form-panel" id="consulta-form-panel" style="display: none;">
+        <h1 id="consulta-title">Consulta Aprendiz</h1>
+        <form id="consulta-form" action="consultar_aprendiz.php" method="post">
+          <div class="form-group">
+            <label for="consulta_id_aprendiz">ID Aprendiz</label>
+            <input type="text" id="consulta_id_aprendiz" name="id_aprendiz" required>
+          </div>
+          <div class="form-group" style="display: flex; gap: 10px;">
+            <button type="submit" class="submit-btn">Consultar</button>
+            <button type="button" class="submit-btn" id="limpiar-btn" style="background-color: #6c757d;">Limpiar</button>
+          </div>
+        </form>
+
+        <!-- Sección para mostrar resultados de consulta -->
+        <div id="resultado-consulta" style="display: none; margin-top: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden;">
+          <div style="background-color: #28a745; color: white; padding: 15px 20px;">
+            <h2 style="margin: 0; font-size: 1.5rem;">Datos del Aprendiz</h2>
+          </div>
+          <div id="datos-aprendiz" style="padding: 20px; background-color: white;">
+            <!-- Los datos se insertarán aquí dinámicamente -->
+          </div>
+        </div>
+      </div>
+      <!-- Formulario de actualización -->
+      <!-- Formulario de actualización -->
+      <div class="form-panel" id="actualizar-form-panel" style="display: none;">
+        <h1 id="actualizar-title">Actualizar Aprendiz</h1>
+        <form id="actualizar-form" action="actualizar_aprendiz.php" method="post">
+          <input type="hidden" name="accion" value="actualizar">
+          <div class="form-group">
+            <label for="actualizar_id_aprendiz">ID Aprendiz</label>
+            <input type="text" id="actualizar_id_aprendiz" name="id_aprendiz" required>
+            <button type="button" id="buscar-actualizar" class="submit-btn" style="margin-top: 10px;">Buscar</button>
+          </div>
+          <div class="form-group">
+            <label for="actualizar_nombre">Nombre</label>
+            <input type="text" id="actualizar_nombre" name="nombre" disabled required>
+          </div>
+          <div class="form-group">
+            <label for="actualizar_direccion">Dirección</label>
+            <input type="text" id="actualizar_direccion" name="direccion" disabled required>
+          </div>
+          <div class="form-group">
+            <label for="actualizar_telefono">Teléfono</label>
+            <input type="tel" id="actualizar_telefono" name="telefono" pattern="[0-9]{7,10}" disabled required>
+          </div>
+          <div class="form-group">
+            <label for="actualizar_programa">Programa</label>
+            <input type="text" id="actualizar_programa" name="programa" disabled required>
+          </div>
+          <div class="form-group">
+            <label for="actualizar_ficha">Número de Ficha</label>
+            <input type="text" id="actualizar_ficha" name="ficha" disabled required>
+          </div>
+          <div class="form-group" style="display: flex; gap: 10px;">
+            <button type="submit" class="submit-btn" id="btn-actualizar" disabled>Actualizar</button>
+            <button type="button" class="submit-btn" id="limpiar-actualizar-btn" style="background-color: #6c757d;" disabled>Limpiar</button>
+          </div>
+        </form>
+      </div>
+      <!-- Formulario de eliminación -->
+      <div class="form-panel" id="eliminar-form-panel" style="display: none;">
+        <h1 id="eliminar-title">Eliminar Aprendiz</h1>
+        <form id="eliminar-form">
+          <div class="form-group">
+            <label for="eliminar_id_aprendiz">ID Aprendiz</label>
+            <input type="text" id="eliminar_id_aprendiz" name="id_aprendiz" required>
+            <button type="button" id="buscar-eliminar" class="submit-btn" style="margin-top: 10px;">Buscar</button>
+          </div>
+          
+          <!-- Sección para mostrar datos del aprendiz a eliminar -->
+          <div id="datos-eliminar" style="display: none; margin-top: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden;">
+            <div style="background-color: #dc3545; color: white; padding: 15px 20px;">
+              <h2 style="margin: 0; font-size: 1.5rem;">Datos del Aprendiz a Eliminar</h2>
+            </div>
+            <div id="info-aprendiz-eliminar" style="padding: 20px; background-color: white;">
+              <!-- Los datos se insertarán aquí dinámicamente -->
+            </div>
+            <div style="padding: 15px 20px; background-color: #f8f9fa; display: flex; justify-content: flex-end;">
+              <button type="button" id="confirmar-eliminar" class="submit-btn" style="background-color: #dc3545;">Eliminar Aprendiz</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Función para formatear la fecha
+    function formatDate(date) {
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return date.toLocaleDateString('es-ES', options);
+    }
+    document.getElementById('current-date').textContent = formatDate(new Date());
+    
+    // Función para actualizar la hora en tiempo real
+    function updateTime() {
+      const now = new Date();
+      document.getElementById('current-time').textContent = now.toLocaleTimeString('es-ES');
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+  
+    // Función para ocultar todos los paneles
+    function hideAllPanels() {
+      const panels = [registroFormPanel, consultaFormPanel, actualizarFormPanel, document.getElementById('eliminar-form-panel')];
+      panels.forEach(panel => {
+        if (panel) panel.style.display = 'none';
+      });
+    }
+  
+    // Manejo de botones del menú
+    const ingresoBtn = document.getElementById('ingreso-btn');
+    const consultaBtn = document.getElementById('consulta-btn');
+    const actualizarBtn = document.getElementById('actualizar-btn');
+    const eliminarBtn = document.getElementById('eliminar-btn');
+    const notasBtn = document.getElementById('notas-btn');
+    const registroFormPanel = document.getElementById('registro-form-panel');
+    const consultaFormPanel = document.getElementById('consulta-form-panel');
+    const actualizarFormPanel = document.getElementById('actualizar-form-panel');
+    const resultadoConsulta = document.getElementById('resultado-consulta');
+  
+    ingresoBtn.addEventListener('click', function() {
+      hideAllPanels();
+      registroFormPanel.style.display = 'block';
+    });
+  
+    consultaBtn.addEventListener('click', function() {
+      hideAllPanels();
+      consultaFormPanel.style.display = 'block';
+    });
+    
+    actualizarBtn.addEventListener('click', function() {
+      hideAllPanels();
+      actualizarFormPanel.style.display = 'block';
+    });
+    
+    notasBtn.addEventListener('click', function() {
+      window.location.href = 'notas.html';
+    });
+    
+    // Consulta de aprendiz
+    document.getElementById('consulta-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const idAprendiz = document.getElementById('consulta_id_aprendiz').value;
+  
+      fetch('consultar_aprendiz.php?t=' + Date.now(), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `id_aprendiz=${encodeURIComponent(idAprendiz)}`
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          const aprendizData = data.aprendiz;
+          const datosHTML = `
+            <p style="color: green; font-weight: bold;">Aprendiz encontrado</p>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+              <div style="background-color: #f8f9fa; padding: 15px; border-radius: 6px;">
+                <p style="color: #6c757d; margin: 0 0 5px 0; font-size: 0.9rem;">ID APRENDIZ</p>
+                <p style="font-weight: bold; margin: 0; font-size: 1.1rem;">${aprendizData.id_aprendiz}</p>
+              </div>
+              <div style="background-color: #f8f9fa; padding: 15px; border-radius: 6px;">
+                <p style="color: #6c757d; margin: 0 0 5px 0; font-size: 0.9rem;">NOMBRE</p>
+                <p style="font-weight: bold; margin: 0; font-size: 1.1rem;">${aprendizData.nombre}</p>
+              </div>
+              <div style="background-color: #f8f9fa; padding: 15px; border-radius: 6px;">
+                <p style="color: #6c757d; margin: 0 0 5px 0; font-size: 0.9rem;">DIRECCIÓN</p>
+                <p style="font-weight: bold; margin: 0; font-size: 1.1rem;">${aprendizData.direccion}</p>
+              </div>
+              <div style="background-color: #f8f9fa; padding: 15px; border-radius: 6px;">
+                <p style="color: #6c757d; margin: 0 0 5px 0; font-size: 0.9rem;">TELÉFONO</p>
+                <p style="font-weight: bold; margin: 0; font-size: 1.1rem;">${aprendizData.telefono}</p>
+              </div>
+              <div style="background-color: #f8f9fa; padding: 15px; border-radius: 6px;">
+                <p style="color: #6c757d; margin: 0 0 5px 0; font-size: 0.9rem;">PROGRAMA</p>
+                <p style="font-weight: bold; margin: 0; font-size: 1.1rem;">${aprendizData.programa}</p>
+              </div>
+              <div style="background-color: #f8f9fa; padding: 15px; border-radius: 6px;">
+                <p style="color: #6c757d; margin: 0 0 5px 0; font-size: 0.9rem;">FICHA</p>
+                <p style="font-weight: bold; margin: 0; font-size: 1.1rem;">${aprendizData.ficha}</p>
+              </div>
+            </div>
+          `;
+          document.getElementById('datos-aprendiz').innerHTML = datosHTML;
+          resultadoConsulta.style.display = 'block';
+        } else {
+          alert('No se encontró ningún aprendiz con ese ID');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+    });
+    
+    // Limpiar consulta
+    document.getElementById('limpiar-btn').addEventListener('click', function() {
+      document.getElementById('consulta_id_aprendiz').value = '';
+      document.getElementById('datos-aprendiz').innerHTML = '';
+      resultadoConsulta.style.display = 'none';
+    });
+    
+    // Buscar para actualizar
+    document.getElementById('buscar-actualizar').addEventListener('click', function() {
+      const idAprendiz = document.getElementById('actualizar_id_aprendiz').value;
+      
+      if (!idAprendiz) {
+        alert('Por favor ingrese un ID de aprendiz');
+        return;
+      }
+      
+      fetch('consultar_aprendiz.php?t=' + Date.now(), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `id_aprendiz=${encodeURIComponent(idAprendiz)}`
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          const campos = ['nombre', 'direccion', 'telefono', 'programa', 'ficha'];
+          campos.forEach(campo => {
+            const input = document.getElementById(`actualizar_${campo}`);
+            input.value = data.aprendiz[campo];
+            input.disabled = false;
+          });
+          document.getElementById('btn-actualizar').disabled = false;
+          document.getElementById('limpiar-actualizar-btn').disabled = false;
+        } else {
+          alert('No se encontró ningún aprendiz con ese ID');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error al buscar el aprendiz');
+      });
+    });
+    
+    // Actualizar aprendiz
+    document.getElementById('actualizar-form').addEventListener('submit', function(event) {
+      event.preventDefault();
+      
+      const formData = new FormData(this);
+      
+      fetch('actualizar_aprendiz.php', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert(data.message || data.notice || 'Aprendiz actualizado correctamente');
+          
+          // Clear the form after successful update
+          document.getElementById('actualizar_id_aprendiz').value = '';
+          const campos = ['nombre', 'direccion', 'telefono', 'programa', 'ficha'];
+          campos.forEach(campo => {
+            const input = document.getElementById(`actualizar_${campo}`);
+            input.value = '';
+            input.disabled = true;
+          });
+          document.getElementById('btn-actualizar').disabled = true;
+          document.getElementById('limpiar-actualizar-btn').disabled = true;
+        } else {
+          alert('Error al actualizar: ' + (data.error || 'Error desconocido'));
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error al procesar la solicitud');
+      });
+    });
+    
+    // Limpiar formulario de actualización
+    document.getElementById('limpiar-actualizar-btn').addEventListener('click', function() {
+      document.getElementById('actualizar_id_aprendiz').value = '';
+      const campos = ['nombre', 'direccion', 'telefono', 'programa', 'ficha'];
+      campos.forEach(campo => {
+        const input = document.getElementById(`actualizar_${campo}`);
+        input.value = '';
+        input.disabled = true;
+      });
+      document.getElementById('btn-actualizar').disabled = true;
+      this.disabled = true;
+    });
+    // Add to menu button handlers
+    eliminarBtn.addEventListener('click', function() {
+      hideAllPanels();
+      document.getElementById('eliminar-form-panel').style.display = 'block';
+    });
+    
+    // Buscar para eliminar
+    document.getElementById('buscar-eliminar').addEventListener('click', function() {
+      const idAprendiz = document.getElementById('eliminar_id_aprendiz').value;
+      
+      if (!idAprendiz) {
+        alert('Por favor ingrese un ID de aprendiz');
+        return;
+      }
+      
+      fetch('consultar_aprendiz.php?t=' + Date.now(), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `id_aprendiz=${encodeURIComponent(idAprendiz)}`
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          const aprendizData = data.aprendiz;
+          const datosHTML = `
+            <p style="color: #dc3545; font-weight: bold;">¿Está seguro que desea eliminar este aprendiz?</p>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
+              <div style="background-color: #f8f9fa; padding: 15px; border-radius: 6px;">
+                <p style="color: #6c757d; margin: 0 0 5px 0; font-size: 0.9rem;">ID APRENDIZ</p>
+                <p style="font-weight: bold; margin: 0; font-size: 1.1rem;">${aprendizData.id_aprendiz}</p>
+              </div>
+              <div style="background-color: #f8f9fa; padding: 15px; border-radius: 6px;">
+                <p style="color: #6c757d; margin: 0 0 5px 0; font-size: 0.9rem;">NOMBRE</p>
+                <p style="font-weight: bold; margin: 0; font-size: 1.1rem;">${aprendizData.nombre}</p>
+              </div>
+              <div style="background-color: #f8f9fa; padding: 15px; border-radius: 6px;">
+                <p style="color: #6c757d; margin: 0 0 5px 0; font-size: 0.9rem;">DIRECCIÓN</p>
+                <p style="font-weight: bold; margin: 0; font-size: 1.1rem;">${aprendizData.direccion}</p>
+              </div>
+              <div style="background-color: #f8f9fa; padding: 15px; border-radius: 6px;">
+                <p style="color: #6c757d; margin: 0 0 5px 0; font-size: 0.9rem;">TELÉFONO</p>
+                <p style="font-weight: bold; margin: 0; font-size: 1.1rem;">${aprendizData.telefono}</p>
+              </div>
+              <div style="background-color: #f8f9fa; padding: 15px; border-radius: 6px;">
+                <p style="color: #6c757d; margin: 0 0 5px 0; font-size: 0.9rem;">PROGRAMA</p>
+                <p style="font-weight: bold; margin: 0; font-size: 1.1rem;">${aprendizData.programa}</p>
+              </div>
+              <div style="background-color: #f8f9fa; padding: 15px; border-radius: 6px;">
+                <p style="color: #6c757d; margin: 0 0 5px 0; font-size: 0.9rem;">FICHA</p>
+                <p style="font-weight: bold; margin: 0; font-size: 1.1rem;">${aprendizData.ficha}</p>
+              </div>
+            </div>
+          `;
+          document.getElementById('info-aprendiz-eliminar').innerHTML = datosHTML;
+          document.getElementById('datos-eliminar').style.display = 'block';
+        } else {
+          alert('No se encontró ningún aprendiz con ese ID');
+          document.getElementById('datos-eliminar').style.display = 'none';
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('Error al buscar el aprendiz');
+      });
+    });
+    
+    // Confirmar eliminación
+    document.getElementById('confirmar-eliminar').addEventListener('click', function() {
+      const idAprendiz = document.getElementById('eliminar_id_aprendiz').value;
+      
+      if (confirm('¿Está seguro que desea eliminar este aprendiz? Esta acción no se puede deshacer.')) {
+        fetch('eliminar_aprendiz.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+          body: `id_aprendiz=${encodeURIComponent(idAprendiz)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Aprendiz eliminado correctamente');
+            // Limpiar formulario
+            document.getElementById('eliminar_id_aprendiz').value = '';
+            document.getElementById('datos-eliminar').style.display = 'none';
+          } else {
+            alert('Error al eliminar: ' + (data.error || 'Error desconocido'));
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error al procesar la solicitud');
+        });
+      }
+    });
+  </script>
+</body>
+</html>
